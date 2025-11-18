@@ -367,6 +367,10 @@ void TaskButtons(void *pvParameters) {
 **สาเหตุ:** Stack overflow
 **แก้ไข:** เพิ่ม Stack size ใน xTaskCreate()
 
+### Task creation fails
+**สาเหตุ:** Insufficient memory or invalid parameters
+**แก้ไข:** All examples now include error checking - check Serial output for error messages
+
 ### Task ไม่ทำงาน
 **สาเหตุ:** Priority ต่ำเกิน
 **แก้ไข:** เพิ่ม Priority
@@ -382,6 +386,11 @@ void TaskButtons(void *pvParameters) {
 ### Serial.print() ช้า
 **สาเหตุ:** print มากเกินไปใน Task ความถี่สูง
 **แก้ไข:** print ใน Task แยก (TaskLogger)
+
+### ESP32 Core 3.x compilation errors
+**Error:** `'ledcSetup' was not declared in this scope`
+**สาเหตุ:** Using ESP32 Arduino Core 3.x with old PWM API
+**แก้ไข:** Examples updated to use new API - see notes below
 
 ---
 
@@ -484,6 +493,31 @@ void TaskBlink2(void *pvParameters) {
 - โปรเจกต์ SmartController ครบ 6 Tasks
 - เพิ่ม WiFi ส่งข้อมูลขึ้น Cloud
 - ออกแบบ State Machine ซับซ้อน
+
+---
+
+## ⚠️ Important: ESP32 Core 3.x Compatibility
+
+### Breaking Changes in ESP32 Arduino Core 3.x
+
+All FreeRTOS examples have been **updated and tested** with ESP32 Core 3.x. Key improvements:
+
+#### ✅ Task Creation Error Handling
+
+All `xTaskCreate()` calls now include error checking:
+
+```cpp
+// Old (no error checking):
+xTaskCreate(TaskDisplay, "Display", 2048, NULL, 2, NULL);
+
+// New (with error checking):
+if (xTaskCreate(TaskDisplay, "Display", 2048, NULL, 2, NULL) != pdPASS) {
+  Serial.println("ERROR: Failed to create TaskDisplay!");
+  while(1);  // Halt system
+}
+```
+
+**Benefit:** Prevents silent failures and helps debug memory/configuration issues.
 
 ---
 

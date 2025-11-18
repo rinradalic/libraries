@@ -268,7 +268,7 @@ void setup() {
   Serial.println("Creating tasks...");
   
   // Task 1: Display (Priority สูง - ต้องสแกนเร็ว)
-  xTaskCreate(
+  BaseType_t result1 = xTaskCreate(
     TaskDisplay,      // ฟังก์ชัน Task
     "Display",        // ชื่อ Task
     2048,             // Stack size (words)
@@ -276,9 +276,13 @@ void setup() {
     2,                // Priority (สูงกว่า = สำคัญกว่า)
     NULL              // Task handle
   );
+  if (result1 != pdPASS) {
+    Serial.println("ERROR: Failed to create TaskDisplay!");
+    while(1);
+  }
   
   // Task 2: Buttons (Priority กลาง)
-  xTaskCreate(
+  BaseType_t result2 = xTaskCreate(
     TaskButtons,
     "Buttons",
     2048,
@@ -286,9 +290,13 @@ void setup() {
     1,
     NULL
   );
+  if (result2 != pdPASS) {
+    Serial.println("ERROR: Failed to create TaskButtons!");
+    while(1);
+  }
   
   // Task 3: Sensor (Priority กลาง, Stack ใหญ่กว่า - DHT library ใช้เยอะ)
-  xTaskCreate(
+  BaseType_t result3 = xTaskCreate(
     TaskSensor,
     "Sensor",
     4096,
@@ -296,6 +304,10 @@ void setup() {
     1,
     NULL
   );
+  if (result3 != pdPASS) {
+    Serial.println("ERROR: Failed to create TaskSensor!");
+    while(1);
+  }
   
   Serial.println("✓ All tasks created");
   Serial.println("✓ FreeRTOS scheduler running");

@@ -374,12 +374,24 @@ void setup() {
   pinMode(LED_MANUAL, OUTPUT);
   
   // Create Tasks
-  xTaskCreate(TaskDisplay, "Display", 2048, NULL, 3, NULL);
-  xTaskCreate(TaskButtons, "Buttons", 4096, NULL, 2, NULL);
-  xTaskCreate(TaskSensor, "Sensor", 4096, NULL, 1, NULL);
-  xTaskCreate(TaskController, "Controller", 2048, NULL, 2, NULL);
-  xTaskCreate(TaskLEDs, "LEDs", 2048, NULL, 1, NULL);
-  xTaskCreate(TaskLogger, "Logger", 2048, NULL, 1, NULL);
+  if (xTaskCreate(TaskDisplay, "Display", 2048, NULL, 3, NULL) != pdPASS) {
+    Serial.println("ERROR: Failed to create TaskDisplay!"); while(1);
+  }
+  if (xTaskCreate(TaskButtons, "Buttons", 4096, NULL, 2, NULL) != pdPASS) {
+    Serial.println("ERROR: Failed to create TaskButtons!"); while(1);
+  }
+  if (xTaskCreate(TaskSensor, "Sensor", 4096, NULL, 1, NULL) != pdPASS) {
+    Serial.println("ERROR: Failed to create TaskSensor!"); while(1);
+  }
+  if (xTaskCreate(TaskController, "Controller", 2048, NULL, 2, NULL) != pdPASS) {
+    Serial.println("ERROR: Failed to create TaskController!"); while(1);
+  }
+  if (xTaskCreate(TaskLEDs, "LEDs", 2048, NULL, 1, NULL) != pdPASS) {
+    Serial.println("ERROR: Failed to create TaskLEDs!"); while(1);
+  }
+  if (xTaskCreate(TaskLogger, "Logger", 2048, NULL, 1, NULL) != pdPASS) {
+    Serial.println("ERROR: Failed to create TaskLogger!"); while(1);
+  }
   
   Serial.println("✓ All 6 tasks created");
   Serial.println();

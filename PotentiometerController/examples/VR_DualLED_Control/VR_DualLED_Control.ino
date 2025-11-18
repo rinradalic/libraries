@@ -25,9 +25,7 @@ const int VR_PIN = 34;
 const int LED1_PIN = 2;   // Normal LED
 const int LED2_PIN = 4;   // Inverted LED
 
-// PWM channels
-const int PWM_CH1 = 0;
-const int PWM_CH2 = 1;
+// PWM configuration
 const int PWM_FREQ = 5000;
 const int PWM_RES = 8;
 
@@ -37,12 +35,9 @@ void setup() {
   Serial.begin(115200);
   vr.begin();
   
-  // Setup two PWM channels
-  ledcSetup(PWM_CH1, PWM_FREQ, PWM_RES);
-  ledcAttachPin(LED1_PIN, PWM_CH1);
-  
-  ledcSetup(PWM_CH2, PWM_FREQ, PWM_RES);
-  ledcAttachPin(LED2_PIN, PWM_CH2);
+  // Setup two PWM pins (Core 3.x API)
+  ledcAttach(LED1_PIN, PWM_FREQ, PWM_RES);
+  ledcAttach(LED2_PIN, PWM_FREQ, PWM_RES);
   
   Serial.println("=== Dual LED Control with VR ===");
   Serial.println("LED1: Normal | LED2: Inverted");
@@ -53,8 +48,8 @@ void loop() {
   int pwm1 = vr.readMapped(0, 255);  // Normal
   int pwm2 = 255 - pwm1;             // Inverted
   
-  ledcWrite(PWM_CH1, pwm1);
-  ledcWrite(PWM_CH2, pwm2);
+  ledcWrite(LED1_PIN, pwm1);
+  ledcWrite(LED2_PIN, pwm2);
   
   Serial.print("VR: ");
   Serial.print(vr.readPercent());
