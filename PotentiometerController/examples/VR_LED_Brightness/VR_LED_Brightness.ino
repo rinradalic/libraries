@@ -33,7 +33,6 @@ const int VR_PIN = 34;    // ADC pin
 const int LED_PIN = 2;    // PWM output pin
 
 // PWM configuration for ESP32
-const int PWM_CHANNEL = 0;
 const int PWM_FREQ = 5000;      // 5 kHz
 const int PWM_RESOLUTION = 8;   // 8-bit (0-255)
 
@@ -43,9 +42,8 @@ void setup() {
   Serial.begin(115200);
   vr.begin();
   
-  // Setup PWM on ESP32
-  ledcSetup(PWM_CHANNEL, PWM_FREQ, PWM_RESOLUTION);
-  ledcAttachPin(LED_PIN, PWM_CHANNEL);
+  // Setup PWM on ESP32 (Core 3.x API)
+  ledcAttach(LED_PIN, PWM_FREQ, PWM_RESOLUTION);
   
   Serial.println("=== VR → LED Brightness Control ===");
   Serial.println("Rotate VR to control LED brightness");
@@ -57,7 +55,7 @@ void loop() {
   int pwmValue = vr.readMapped(0, 255);
   
   // Set LED brightness
-  ledcWrite(PWM_CHANNEL, pwmValue);
+  ledcWrite(LED_PIN, pwmValue);
   
   // Display values
   Serial.print("RAW: ");
